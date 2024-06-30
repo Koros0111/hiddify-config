@@ -19,6 +19,8 @@ if [ "$(id -u)" -ne 0 ]; then
     echo 'This script must be run by root' >&2
     exit 1
 fi
+echo -n "" >> log/system/panel.log
+chown hiddify-panel log/system/panel.log
 function main() {
     update_progress "Please wait..." "We are going to install Hiddify..." 0
     export ERROR=0
@@ -148,7 +150,7 @@ function cleanup() {
 trap cleanup SIGINT
 
 function set_config_from_hpanel() {
-    (cd hiddify-panel && python3 -m hiddifypanel all-configs) >current.json
+    (hiddify-panel-cli all-configs) >current.json
     chmod 600 current.json
     if [[ $? != 0 ]]; then
         error "Exception in Hiddify Panel. Please send the log to hiddify@gmail.com"
